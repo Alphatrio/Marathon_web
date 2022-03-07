@@ -3,12 +3,10 @@ git du groupe 3 du marathon du web de la promo MIASHS 2021/2022
 
 Composition :
 
-  Coordinateur : Michel-Picque 
-  Membres : Robin Biagioni 
-            Arazi Issoufou
-            Corentin Teyssier
+Coordinateur : Michel-Picque Théodore
+Membres : Robin Biagioni, Arazi Issoufou, Corentin Teyssier
  
-Sujet : MontpelYeah - Création d'un dashboard en temps réel pour suivre la disponibilité des places de parking et des vélom mag pour la métropole de Montpellier.
+Sujet : MontpelYeah - Création d'un dashboard en temps réel pour suivre la disponibilité des places de parking et des Vélomagg' au sein de la métropole de Montpellier.
 
 Répartition des tâches :
 
