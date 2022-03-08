@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <link rel='stylesheet' type='text/css' href='dashboard.css' >
+		<meta charset="UTF-8" />
+		<title>Dashboard</title>
+		<script type="text/javascript" src="leaflet/leaflet.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="Leaflet.markercluster-1.4.1/dist/leaflet.markercluster.js"> </script>
+	</head>
+	<body>
+    <div id="divmap"></div>
+
+    <script>
+      var map = L.map('divmap');
+      map.setView([43.6, 3.8833], 13);
+      L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {attribution: '&copy; Tiles by <a href="http://mapc.org">MAPC</a>, Data by <a href="http://mass.gov/mgis">MassGIS</a>',
+        maxZoom: 17, minZoom: 9}).addTo(map);
+			/*
+      L.tileLayer( 'http://tiles.mapc.org/trailmap-onroad/{z}/{x}/{y}.png',
+        {
+          maxZoom: 17,          PISTES CYCLABLES
+          minZoom: 9
+        }
+      ).addTo(map);
+			*/
+
+      var parkIcon = L.icon({
+        iconUrl: 'images/Parking.png',
+        iconSize: [20,20]
+      });
+
+			var veloIcon = L.icon({
+				iconUrl: 'images/velo.png',
+				iconSize: [20,25]
+			});
+
+      $.ajax({
+        url: "data/Parking.geojson",
+        dataType: "json",
+        success: function(parking){
+          var parkLayer = L.geoJson(parking, { pointToLayer: function(feature,latlng){
+            var marker = L.marker(latlng,{icon: parkIcon});
+            marker.bindPopup(feature.properties.nom + " " + feature.properties.adresse);
+            return marker;
+          }})
+          .addTo(map);
+          //var clusters = L.markerClusterGroup();
+          //clusters.addLayer(parkLayer);
+          //map.addLayer(clusters);
+        }
+      });
+
+
+
+      $.ajax({
+        url: "data/Velomagg.geojson",
+        dataType: "json",
+        success: function(velo){
+          var veloLayer = L.geoJson(velo, { pointToLayer: function(feature,latlng){
+            var marker = L.marker(latlng,{icon: veloIcon});
+            marker.bindPopup(feature.properties.name);
+            return marker;
+          }})
+          .addTo(map);
+
+        }
+      });
+
+
+    </script>
+
+  </body>
+
+</html>
