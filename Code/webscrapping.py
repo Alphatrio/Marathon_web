@@ -5,7 +5,6 @@ Spyder Editor
 This is a temporary script file.
 """
 
-import pandas as pd
 import xmltodict
 import requests
 from elasticsearch import Elasticsearch
@@ -56,8 +55,5 @@ es = Elasticsearch(
 )
 
 es.index(
- index='webscrapping',
- document={
-  'character': 'Aragon',
-  'quote': 'It is not this day.'
- })
+ index='car_parking_index',
+ document=dic_park)
