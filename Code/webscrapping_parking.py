@@ -45,7 +45,7 @@ for nom_parking in geo_loc_parking:
     
     temp_park_dic = {'Name' : nom_parking, 'Status':dict_data['park']['Status'],
                     'Free':dict_data['park']['Free'], 'Total': dict_data['park']['Total'],
-                    'x_pos': geo_loc_parking[nom_parking][0], 'y_pos':geo_loc_parking[nom_parking][0]}
+                    'x_pos': geo_loc_parking[nom_parking][0], 'y_pos':geo_loc_parking[nom_parking][1]}
     
     dic_park['Parkings'].append(temp_park_dic)
     
