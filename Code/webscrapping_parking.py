@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#! /usr/bin/python3
 """
 Spyder Editor
 
@@ -42,13 +43,13 @@ geo_loc_parking = {
 dic_park = {'dateTime' : ts, 'Parkings':[]}
 for nom_parking in geo_loc_parking:
     dict_data = xmltodict.parse(requests.get('https://data.montpellier3m.fr/sites/default/files/ressources/FR_'+geo_loc_parking[nom_parking][2]+'_'+nom_parking+'.xml').content)
-    
+
     temp_park_dic = {'Name' : nom_parking, 'Status':dict_data['park']['Status'],
                     'Free':dict_data['park']['Free'], 'Total': dict_data['park']['Total'],
                     'x_pos': geo_loc_parking[nom_parking][0], 'y_pos':geo_loc_parking[nom_parking][1]}
     
     dic_park['Parkings'].append(temp_park_dic)
-    
+
 es = Elasticsearch(
     cloud_id='MarathonDuWeb:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGZhMzJkNzYyNzFjYzQ4OTRhNjk2ZWQ4NTVhYjkwMDgyJGZjOTk1YzA0ZmYyYjQ5ZmM4OTliYjAwODNkYzA5N2U0',
     basic_auth=('elastic', 'QjTCAIOmAkkqqTIGjeEeD63q')
