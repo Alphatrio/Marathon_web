@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mon premier dashboard</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>  </head>
+
+  <body>
+  
+    <div class="content">
+      <header>
+        <div class="header-background"></div>
+        <div class="title">
+          <h1>
+            Mon dashboard
+          </h1>
+        </div>
+      </header>
+      
+      <main>
+        <div class="chartContainer">
+        </div>
+      </main>
+    </div>
+    
+    <script type="text/javascript">
+        console.log("bonjour");
+        
+        $.ajax({
+            url: "/Users/Corentin/Documents/GitHub/Marathon_web/ESAPI/getAllParking",
+            success: display_news
+        });
+
+	    console.log("Au revoir");
+        
+        function display_news(result){
+            console.log("Nous allons afficher les articles de presse");
+        }
+    </script>
+    
+  </body>
+  
+</html>
