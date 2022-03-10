@@ -147,7 +147,7 @@ function syncSidebar() {
   parkings.eachLayer(function (layer) {
     if (map.hasLayer(parkingLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="/static/assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.ID_name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle; padding-left: 10px;"><img width="18" height="18" src="/static/assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.ID_name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -155,7 +155,7 @@ function syncSidebar() {
   velomaggs.eachLayer(function (layer) {
     if (map.hasLayer(velomaggLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="/static/assets/img/velo.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="22" height="22" src="/static/assets/img/velo.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -213,8 +213,7 @@ var parkings = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Nom</th><td>" + feature.properties.ID_name + "</a></td></tr><tr><th>Places disponibles</th><td>" + feature.properties.Free + "</a></td></tr>" + "<table>";
-
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Nom</th><td>" + feature.properties.ID_name + "</a></td></tr><tr><th>Places disponibles</th><td>" + feature.properties.Free + "</a></td></tr><tr><th>Places occupées</th><td>" + (feature.properties.Total - feature.properties.Free) + "</a></td></tr>" + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.ID_name);
@@ -242,39 +241,21 @@ var parkings = L.geoJson(null, {
             5:6,
             6:5,
           };
-
           var today_2 = dict[today]
-
-
           console.log(dict_parking);
           var bon_doc = dict_parking[feature.properties.ID_name];
           console.log(bon_doc);
 
           d3.json('/static/data/'+bon_doc+".json").then(function(data) {
-
-
             console.log(data);
-
-
             for(let j=0;j<data.Jours[today_2].Données.length;j++){
 
                 liste_heures[j]=data.Jours[today_2].Données[j].Heure;
-
-
               }
-
-
             for (let i=0;i<liste_heures.length;i++){
-
             }
-
-
             var ctx = document.getElementById('mychart').getContext('2d');
-
             var chart = new Chart(ctx, {
-
-
-
                 type: 'bar',
                 data: {
                   labels: liste_heures,
@@ -299,10 +280,6 @@ var parkings = L.geoJson(null, {
   }
 });
 
-console.log('heloo')
-console.log(parkings)
-console.log('heloo')
-
 $.getJSON("/static/data/parkings.geojson", function (data) {
   console.log(parkingLayer);
   console.log(data)
@@ -310,9 +287,6 @@ $.getJSON("/static/data/parkings.geojson", function (data) {
   map.addLayer(parkingLayer);
 });
 
-console.log('heloo')
-console.log(parkings)
-console.log('heloo')
 
   //velomaggLayer
 var velomaggLayer = L.geoJson(null);
@@ -331,7 +305,7 @@ var velomaggs = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Nom</th><td>" + feature.properties.name + "</a></td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Nom</th><td>" + feature.properties.name + "</a></td></tr><tr><th>Places disponibles</th><td>" + feature.properties.Free + "</a></td></tr><tr><th>Places occupées</th><td>" + (feature.properties.Total - feature.properties.Free) + "</a></td></tr>" + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.name);
@@ -479,16 +453,18 @@ if (document.body.clientWidth <= 767) {
 
 //Filtre en haut à droite
 var baseLayers = {
-  "Montpellier": cartoLight
+
 };
 
+//Filtre
 var groupedOverlays = {
-  "Points d'intérêts": {
+  "Filtre": {
     "<img src='/static/assets/img/Parking.png' width='16' height='16'>&nbsp;Parkings": parkingLayer,
     "<img src='/static/assets/img/velo.png' width='22' height='22'>&nbsp;Stations Velomagg'": velomaggLayer
   },
 };
 
+//Groupe avec le filtre
 var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
   collapsed: isCollapsed
 }).addTo(map);
