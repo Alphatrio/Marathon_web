@@ -10,6 +10,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>BootLeaf</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="http://d3js.org/d3.v7.min.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -168,6 +170,7 @@
             <h4 class="modal-title text-primary" id="feature-title"></h4>
           </div>
           <div class="modal-body" id="feature-info"></div>
+            <canvas id='mychart'></canvas>
 
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -183,6 +186,7 @@
             </h4>
           </div>
           <div class="modal-body">
+
             <div id="attribution"></div>
           </div>
         </div><!-- /.modal-content -->

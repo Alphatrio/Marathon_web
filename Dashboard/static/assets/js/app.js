@@ -1,5 +1,31 @@
 var featureList, boroughSearch = [], parkingSearch = [], velomaggSearch = [];
 
+var dict_parking = {
+  'Antigone':'ANTI',
+  'Arc de triomphe':'ARCT',
+  'Comédie':'COME',
+  'Corum':'CORU',
+  'Europa':'EURO',
+  'Foch':'FOCH',
+  'Gambetta':'GAMB',
+  'Gare':'GARE',
+  'Triangle':'TRIA',
+  'Pitot':'PITO',
+  'Circe':'CIRC',
+  'Sabines':'SABI',
+  'Garcia Lorca':'GARC',
+  'Sablassou':'SABL',
+  'Mosson':'MOSS',
+  'Saint Jean Le Sec':'SJLC',
+  'Euromédecine':'MEDC',
+  'Occitanie':'OCCI',
+  'Vicarello':'VICA',
+  'Gaumont OUEST':'GA250',
+  'Charles de Gaulle':'CDGA',
+  'Arceaux':'ARCE',
+  'Polygone':'POLY'
+}
+
 $.ajax({
     url: "/getAllParking",
     async:false
@@ -13,6 +39,17 @@ $.ajax({
 $(window).resize(function() {
   sizeLayerControl();
 });
+
+function places_dispo(data,index) {
+
+  liste_places = [];
+  for(let j=0;j<data.Jours[index].Données.length;j++){
+      liste_places[j]=data.Jours[index].Données[j].Places_libres;
+
+    }
+
+  return liste_places;
+}
 
 function sizeLayerControl() {
   $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
@@ -177,6 +214,7 @@ var parkings = L.geoJson(null, {
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
       var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Nom</th><td>" + feature.properties.ID_name + "</a></td></tr><tr><th>Places disponibles</th><td>" + feature.properties.Free + "</a></td></tr>" + "<table>";
+
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.ID_name);
@@ -190,6 +228,69 @@ var parkings = L.geoJson(null, {
             lat: layer.feature.geometry.coordinates[1],
             lng: layer.feature.geometry.coordinates[0]
           });
+          var liste_heures = []
+          var liste_places = []
+
+          var ladate=new Date();
+          var today = ladate.getDay();
+          var dict = {
+            0:0,
+            1:2,
+            2:3,
+            3:4,
+            4:1,
+            5:6,
+            6:5,
+          };
+
+          var today_2 = dict[today]
+
+
+          console.log(dict_parking);
+          var bon_doc = dict_parking[feature.properties.ID_name];
+          console.log(bon_doc);
+
+          d3.json('/static/data/'+bon_doc+".json").then(function(data) {
+
+
+            console.log(data);
+
+
+            for(let j=0;j<data.Jours[today_2].Données.length;j++){
+
+                liste_heures[j]=data.Jours[today_2].Données[j].Heure;
+
+
+              }
+
+
+            for (let i=0;i<liste_heures.length;i++){
+
+            }
+
+
+            var ctx = document.getElementById('mychart').getContext('2d');
+
+            var chart = new Chart(ctx, {
+
+
+
+                type: 'bar',
+                data: {
+                  labels: liste_heures,
+                  datasets: [
+                    {
+                    backgroundColor: 'rgb(255,99,132)',
+                    borderColor : 'rgb(255,99,132)',
+                    label: data.Jours[today_2].Jour,
+                    data: places_dispo(data,today_2),
+                  },
+                ]
+
+                },
+              });
+
+            });
         }
       });
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="16" src="/static/assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.ID_name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
