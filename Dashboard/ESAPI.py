@@ -8,6 +8,30 @@ from elasticsearch import Elasticsearch
 es = Elasticsearch(cloud_id='MarathonDuWeb:dXMtY2VudHJhbDEuZ2NwLmNsb3VkLmVzLmlvJGZhMzJkNzYyNzFjYzQ4OTRhNjk2ZWQ4NTVhYjkwMDgyJGZjOTk1YzA0ZmYyYjQ5ZmM4OTliYjAwODNkYzA5N2U0'
 ,api_key=('JrOwbn8Bu-QUkx0oK2Ec','jk5xE6kET6q1kH8v7ytQmA'))
 
+park_name_dic = {'ANTI':'Antigone',
+                 'COME':'Comédie',
+                 'CORU':'Corum',
+                 'EURO':'Europa',
+                 'FOCH':'Foch',
+                 'GAMB':'Gambetta',
+                 'GARE':'Gare',
+                 'TRIA':'Triangle',
+                 'ARCT':'Arc de triomphe',
+                 'PITO':'Pitot',
+                 'CIRC':'Circe',
+                 'SABI':'Sabines',
+                 'GARC':'Garcia Lorca',
+                 'SABL':'Sablassou',
+                 'MOSS':'Mosson',
+                 'SJLC':'Saint Jean Le Sec',
+                 'MEDC':'Euromédecine',
+                 'OCCI':'Occitanie',
+                 'VICA':'Vicarello',
+                 'GA250':'Gaumont OUEST',
+                 'CDGA':'Charles de Gaulle',
+                 'ARCE':'Arceaux',
+                 'POLY':'Polygone'}
+
 app = Flask(__name__)
 
 @app.route("/getAllParking")
@@ -23,7 +47,7 @@ def get_all_parking():
     )
     for parking in resp['hits']['hits'][0]['_source']['Parkings']:
         point = Point((parking['x_pos'], parking['y_pos']))
-        features.append(Feature(geometry=point, properties={'ID_name':parking['Name'], 'Status':parking['Status'], 'Free':parking['Free'], 'Total':parking['Total']}))
+        features.append(Feature(geometry=point, properties={'ID_name':park_name_dic[parking['Name']], 'Status':parking['Status'], 'Free':parking['Free'], 'Total':parking['Total']}))
     feature_collection = FeatureCollection(features)
     
     with open('static/data/parkings.geojson', 'w') as f:
@@ -44,14 +68,13 @@ def get_all_velo():
     )
     for station in resp['hits']['hits'][0]['_source']['Stations_velo']:
         point = Point((float(station['x_pos']), float(station['y_pos'])))
-        features.append(Feature(geometry=point, properties={'name':station['Name'],'Free':station['Free'], 'Total':station['Total'], 'Occupied':station['Occupied']}))
+        features.append(Feature(geometry=point, properties={'name':station['Name'][4:],'Free':station['Free'], 'Total':station['Total'], 'Occupied':station['Occupied']}))
     feature_collection = FeatureCollection(features)
     
     with open('static/data/velomagg.geojson', 'w') as f:
         dump(feature_collection, f)
         
     return ('', 204)
-
 @app.route('/')
 def index():
     return render_template("index.html")
