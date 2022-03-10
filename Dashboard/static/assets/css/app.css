@@ -16,6 +16,22 @@ input[type="radio"], input[type="checkbox"] {
   max-width: 100%;
   float: left;
 }
+#sidebar-right {
+  display: block;
+  width: 250px;
+  height: 100%;
+  max-width: 100%;
+  float: right;
+}
+
+#features-right {
+  margin: 0px;
+  border: none;
+  border-radius: 0px;
+  -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
 #map {
   width: auto;
   height: 100%;
@@ -174,4 +190,26 @@ input[type="radio"], input[type="checkbox"] {
   .leaflet-control-container {
     display: none !important;
   }
+}
+
+.modal.fade:not(.in).right .modal-dialog {
+    -webkit-transform: translate3d(25%, 0, 0);
+    transform: translate3d(25%, 0, 0);
+}
+
+.modal-dialog {
+    position: fixed;
+    margin: auto;
+    width: 320px;
+    height: 77%;
+    right: 1%;
+    top: 20.5%;
+
+}
+.modal-content {
+    height: 100%;
+}
+
+.modal-backdrop {
+   background-color: transparent;
 }

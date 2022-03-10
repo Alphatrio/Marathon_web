@@ -1,11 +1,13 @@
 var featureList, boroughSearch = [], parkingSearch = [], velomaggSearch = [];
 
 $.ajax({
-    url: "/getAllParking"
+    url: "/getAllParking",
+    async:false
 });
 
 $.ajax({
-    url: "/getAllVelo"
+    url: "/getAllVelo",
+    async:false
 });
 
 $(window).resize(function() {
@@ -24,7 +26,7 @@ function sidebarClick(id) {
   var layer = markerClusters.getLayer(id);
   map.setView([layer.getLatLng().lat, layer.getLatLng().lng], 17);
   layer.fire("click");
-  /* Cache la barre latérale est se concentre sur la map sur les petits écrans */
+  // Cache la barre latérale est se concentre sur la map sur les petits écrans
   if (document.body.clientWidth <= 767) {
     $("#sidebar").hide();
     map.invalidateSize();
@@ -69,6 +71,7 @@ $("#sidebar-hide-btn").click(function() {
   return false;
 });
 
+//Durée de l'animation d'ouverture/fermeture de la barre latérale
 function animateSidebar() {
   $("#sidebar").animate({
     width: "toggle"
@@ -77,11 +80,12 @@ function animateSidebar() {
   });
 }
 
-//Afficher la side bar si cachée
+//Afficher la barre latérale si cachée
 $("#list-btn").click(function() {
   animateSidebar();
   return false;
 });
+
 
 //Afficher la section 'À propos' au click
 $("#about-btn").click(function() {
@@ -100,9 +104,9 @@ $("#legend-btn").click(function() {
 
 //Liste des points d'intérêts
 function syncSidebar() {
-  /* Fonctionnalités de la barre vide */
+  // Fonctionnalités de la barre vide
   $("#feature-list tbody").empty();
-  /* Boucle à travers la couche des parkings pour ajouter seulement ceux qui sont dans les limites de la carte */
+  // Boucle à travers la couche des parkings pour ajouter seulement ceux qui sont dans les limites de la carte
   parkings.eachLayer(function (layer) {
     if (map.hasLayer(parkingLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
@@ -110,7 +114,7 @@ function syncSidebar() {
       }
     }
   });
-  /* Boucle à travers la couche des stations Velomagg' pour ajouter seulement celles qui sont dans les limites de la carte */
+  // Boucle à travers la couche des stations Velomagg' pour ajouter seulement celles qui sont dans les limites de la carte
   velomaggs.eachLayer(function (layer) {
     if (map.hasLayer(velomaggLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
@@ -118,7 +122,7 @@ function syncSidebar() {
       }
     }
   });
-  /* Mise à jour de la featureList */
+  // Mise à jour de la featureList
   featureList = new List("features", {
     valueNames: ["feature-name"]
   });
@@ -127,7 +131,7 @@ function syncSidebar() {
   });
 }
 
-/* Couche principale de la carte (tiles)*/
+// Couche principale de la carte (tiles)
 var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
@@ -144,7 +148,7 @@ var highlightStyle = {
 };
 
 
-/* Couches de clusters selon le niveau de zoom */
+// Couches de clusters selon le niveau de zoom
 var markerClusters = new L.MarkerClusterGroup({
   spiderfyOnMaxZoom: true,
   showCoverageOnHover: false,
@@ -163,7 +167,7 @@ var parkings = L.geoJson(null, {
       icon: L.icon({
         iconUrl: "/static/assets/img/Parking.png",
         iconSize: [20, 20],
-        iconAnchor: [12, 28], //déplacement léger de l'icône par rapport aux coordonnées
+        iconAnchor: [10, 22], //déplacement léger de l'icône par rapport aux coordonnées
         popupAnchor: [0, -25]
       }),
       title: feature.properties.ID_name,
@@ -217,7 +221,7 @@ var velomaggs = L.geoJson(null, {
       icon: L.icon({
         iconUrl: "/static/assets/img/velo.png",
         iconSize: [24, 24],
-        iconAnchor: [12, 28],
+        iconAnchor: [12, 22],
         popupAnchor: [0, -25]
       }),
       title: feature.properties.name,
@@ -296,17 +300,17 @@ map.on("overlayremove", function(e) {
   }
 });
 
-/* Filtre la liste des points d'intérêts de la barre latérale pour n'afficher que ceux situées dans les limites de la carte actuelle. */
+// Filtre la liste des points d'intérêts de la barre latérale pour n'afficher que ceux situées dans les limites de la carte actuelle
 map.on("moveend", function (e) {
   syncSidebar();
 });
 
-/* Mise en évidence des caractéristiques lorsque l'on clique sur la carte */
+// Mise en évidence des caractéristiques lorsque l'on clique sur la carte
 map.on("click", function(e) {
   highlight.clearLayers();
 });
 
-/* Contrôle des attributions en bas de page*/
+// Contrôle des attributions en bas de page
 function updateAttribution(e) {
   $.each(map._layers, function(index, layer) {
     if (layer.getAttribution) {
@@ -333,7 +337,7 @@ var zoomControl = L.control.zoom({
 }).addTo(map);
 
 
-/* Géolocalisation */
+// Géolocalisation
 var locateControl = L.control.locate({
   position: "bottomright",
   drawCircle: true,
@@ -365,7 +369,7 @@ var locateControl = L.control.locate({
   }
 }).addTo(map);
 
-/* Les écrans plus grands bénéficient d'un contrôle étendu des couches et d'une barre latérale visible. */
+// Les écrans plus grands bénéficient d'un contrôle étendu des couches et d'une barre latérale visible
 if (document.body.clientWidth <= 767) {
   var isCollapsed = true;
 } else {
