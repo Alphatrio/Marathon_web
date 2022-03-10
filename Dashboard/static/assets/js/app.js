@@ -1,12 +1,12 @@
 var featureList, boroughSearch = [], parkingSearch = [], velomaggSearch = [];
 
-$(window).resize(function() {
-  sizeLayerControl();
+$.ajax({
+    url: "/getAllParking"
 });
 
-function sizeLayerControl() {
-  $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
-}
+$.ajax({
+    url: "/getAllVelo"
+});
 
 function clearHighlight() {
   highlight.clearLayers();
@@ -23,35 +23,12 @@ function sidebarClick(id) {
   }
 }
 
-//Revenir au zoom initial
-$("#full-extent-btn").click(function() {
-  map.fitBounds(markerClusters.getBounds());
-  $(".navbar-collapse.in").collapse("hide");
-  return false;
-});
-
-//menu de la navbar se rétrécie si format téléphone
-$("#nav-btn").click(function() {
-  $(".navbar-collapse").collapse("toggle");
-  return false;
-});
-
 //fonctions liées à l'affichage de la sidebar (liste des parkings et stations Velomagg')
 $(document).on("click", ".feature-row", function(e) {
   $(document).off("mouseout", ".feature-row", clearHighlight);
   sidebarClick(parseInt($(this).attr("id"), 10));
 });
 
-
-if ( !("ontouchstart" in window) ) {
-  $(document).on("mouseover", ".feature-row", function(e) {
-    highlight.clearLayers().addLayer(L.circleMarker([$(this).attr("lat"), $(this).attr("lng")], highlightStyle));
-  });
-}
-
-$(document).on("mouseout", ".feature-row", clearHighlight);
-
-//
 $("#sidebar-toggle-btn").click(function() {
   animateSidebar();
   return false;
@@ -96,23 +73,23 @@ $("#legend-btn").click(function() {
 function syncSidebar() {
   /* Empty sidebar features */
   $("#feature-list tbody").empty();
-  /* Boucle à travers la couche des parkings pour ajouter seulement ceux qui sont dans les limites de la carte. */
+  /* Loop through theaters layer and add only features which are in the map bounds */
   parkings.eachLayer(function (layer) {
     if (map.hasLayer(parkingLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="15" height="15" src="assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.nom + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="/static/assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.ID_name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
-  /* Boucle à travers la couche des stations Velomagg' pour ajouter seulement celles qui sont dans les limites de la carte. */
+  /* Loop through museums layer and add only features which are in the map bounds */
   velomaggs.eachLayer(function (layer) {
     if (map.hasLayer(velomaggLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="assets/img/velo.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="/static/assets/img/velo.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
-  /* Mise à jour de la featureList */
+  /* Update list.js featureList */
   featureList = new List("features", {
     valueNames: ["feature-name"]
   });
@@ -121,14 +98,13 @@ function syncSidebar() {
   });
 }
 
-/* Couche principale de la carte */
+/* Basemap Layers */
 var cartoLight = L.tileLayer("https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>'
 });
 
-//Couches secondaires de la map
-//Couche sur laquelle on positionne les points d'intérêts
+//overlay layer
 var highlight = L.geoJson(null);
 var highlightStyle = {
   stroke: false,
@@ -138,43 +114,45 @@ var highlightStyle = {
 };
 
 
-/* Couches de clusters selon le niveau de zoom */
+/* Single marker cluster layer to hold all clusters */
 var markerClusters = new L.MarkerClusterGroup({
   spiderfyOnMaxZoom: true,
   showCoverageOnHover: false,
   zoomToBoundsOnClick: true,
-  disableClusteringAtZoom: 13
+  disableClusteringAtZoom: 16
 });
 
 
 
-//Création des layers vides parking et stations Velomagg' puis récupération des data
-//parkingLayer
+
+//récupération des data parkings et vélos
+/* Empty layer placeholder to add to layer control for listening when to add/remove theaters to markerClusters layer */
 var parkingLayer = L.geoJson(null);
 var parkings = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/Parking.png",
-        iconSize: [20, 20],
-        iconAnchor: [12, 28], //déplacement léger de l'icône par rapport aux coordonnées
+        iconUrl: "/static/assets/img/Parking.png",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
         popupAnchor: [0, -25]
       }),
-      title: feature.properties.nom,
+      title: feature.properties.ID_name,
       riseOnHover: true
     });
   },
   onEachFeature: function (feature, layer) {
+    // console.log(feature)
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.nom + "</a></td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.ID_name + "</a></td></tr><tr><th>Free</th><td>" + feature.properties.Free + "</a></td></tr>" + "<table>";
       layer.on({
         click: function (e) {
-          $("#feature-title").html(feature.properties.nom);
+          $("#feature-title").html(feature.properties.ID_name);
           $("#feature-info").html(content);
           $("#featureModal").modal("show");
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
           parkingSearch.push({
-            name: layer.feature.properties.nom,
+            name: layer.feature.properties.ID_name,
             source: "Parkings",
             id: L.stamp(layer),
             lat: layer.feature.geometry.coordinates[1],
@@ -182,24 +160,35 @@ var parkings = L.geoJson(null, {
           });
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="16" src="assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.nom + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="16" src="/static/assets/img/Parking.png"></td><td class="feature-name">' + layer.feature.properties.ID_name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
 
     }
   }
 });
-$.getJSON("data/parkings.geojson", function (data) {
+
+console.log('heloo')
+console.log(parkings)
+console.log('heloo')
+
+$.getJSON("/static/data/parkings.geojson", function (data) {
+  console.log(parkingLayer);
+  console.log(data)
   parkings.addData(data);
   map.addLayer(parkingLayer);
 });
 
+console.log('heloo')
+console.log(parkings)
+console.log('heloo')
 
-//velomaggLayer
+/* Empty layer placeholder to add to layer control for listening when to add/remove museums to markerClusters layer */
+
 var velomaggLayer = L.geoJson(null);
 var velomaggs = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/velo.png",
+        iconUrl: "/static/assets/img/velo.png",
         iconSize: [24, 24],
         iconAnchor: [12, 28],
         popupAnchor: [0, -25]
@@ -219,7 +208,7 @@ var velomaggs = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="assets/img/velo.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="20" height="20" src="/static/assets/img/velo.png"></td><td class="feature-name">' + layer.feature.properties.name + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       velomaggSearch.push({
         name: layer.feature.properties.name,
         source: "Velomagg'",
@@ -230,12 +219,21 @@ var velomaggs = L.geoJson(null, {
     }
   }
 });
-$.getJSON("data/velomagg.geojson", function (data) {
+$.getJSON("/static/data/velomagg.geojson", function (data) {
+  console.log(velomaggLayer);
   velomaggs.addData(data);
-  map.addLayer(velomaggLayer);
+  map.addLayer(velomaggLayer); //ligne ajoutée
 });
 
 
+// function display_news(result){
+//     console.log("Nous allons afficher les articles de presse");
+//     console.log(result)
+// }
+
+// function show_error(result){
+//   console.log(result)
+// }
 
 
 map = L.map("map", {
@@ -248,7 +246,22 @@ map = L.map("map", {
 
 
 
-//Ajout/suppression sur la même couches des parkings et stations Velomagg'
+/*
+var map = L.map('map');
+map.setView([43.6, 3.8833], 13);
+L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://cartodb.com/attributions">CartoDB</a>',
+  maxZoom: 17, minZoom: 9}).addTo(map);
+
+L.tileLayer( 'http://tiles.mapc.org/trailmap-onroad/{z}/{x}/{y}.png',
+  {
+    maxZoom: 17,          PISTES CYCLABLES
+    minZoom: 9
+  }
+).addTo(map);
+*/
+
+//SynSidebar appel
+/* Layer control listeners that allow for a single markerClusters layer */
 map.on("overlayadd", function(e) {
   if (e.layer === parkingLayer) {
     markerClusters.addLayer(parkings);
@@ -271,18 +284,17 @@ map.on("overlayremove", function(e) {
   }
 });
 
-/* Filtre la liste des points d'intérêts de la barre latérale pour n'afficher que ceux situées dans les limites de la carte actuelle. */
+/* Filter sidebar feature list to only show features in current map bounds */
 map.on("moveend", function (e) {
   syncSidebar();
 });
 
-/* Mise en évidence des caractéristiques lorsque l'on clique sur la carte */
+/* Clear feature highlight when map is clicked */
 map.on("click", function(e) {
   highlight.clearLayers();
 });
 
-
-/* Contrôle des attributions en bas de page*/
+/* Attribution control */
 function updateAttribution(e) {
   $.each(map._layers, function(index, layer) {
     if (layer.getAttribution) {
@@ -299,18 +311,17 @@ var attributionControl = L.control({
 });
 attributionControl.onAdd = function (map) {
   var div = L.DomUtil.create("div", "leaflet-control-attribution");
-  div.innerHTML = "<span class='hidden-xs'>Équipe 3 - Marathon du web | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
+  div.innerHTML = "<span class='hidden-xs'>Developed by <a href='http://bryanmcbride.com'>bryanmcbride.com</a> | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
   return div;
 };
 map.addControl(attributionControl);
-
 
 var zoomControl = L.control.zoom({
   position: "bottomright"
 }).addTo(map);
 
 
-/* Géolocalisation */
+/* GPS enabled geolocation control set to follow the user's location */
 var locateControl = L.control.locate({
   position: "bottomright",
   drawCircle: true,
@@ -342,22 +353,21 @@ var locateControl = L.control.locate({
   }
 }).addTo(map);
 
-/* Les écrans plus grands bénéficient d'un contrôle étendu des couches et d'une barre latérale visible. */
+/* Larger screens get expanded layer control and visible sidebar */
 if (document.body.clientWidth <= 767) {
   var isCollapsed = true;
 } else {
   var isCollapsed = false;
 }
 
-//Filtre en haut à droite
 var baseLayers = {
-  "Montpellier": cartoLight
+  "Street Map": cartoLight
 };
 
 var groupedOverlays = {
   "Points d'intérêts": {
-    "<img src='assets/img/Parking.png' width='16' height='16'>&nbsp;Parkings": parkingLayer,
-    "<img src='assets/img/velo.png' width='22' height='22'>&nbsp;Stations Velomagg'": velomaggLayer
+    "<img src='/static/assets/img/Parking.png' width='19' height='19'>&nbsp;Parkings": parkingLayer,
+    "<img src='/static/assets/img/velo.png' width='24' height='24'>&nbsp;Stations Velomagg'": velomaggLayer
   },
 };
 
@@ -365,7 +375,17 @@ var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
   collapsed: isCollapsed
 }).addTo(map);
 
+/* Highlight search box text on click */
+$("#searchbox").click(function () {
+  $(this).select();
+});
 
+/* Prevent hitting enter from refreshing the page */
+$("#searchbox").keypress(function (e) {
+  if (e.which == 13) {
+    e.preventDefault();
+  }
+});
 
 $("#featureModal").on("hidden.bs.modal", function (e) {
   $(document).on("mouseout", ".feature-row", clearHighlight);
@@ -373,12 +393,52 @@ $("#featureModal").on("hidden.bs.modal", function (e) {
 
 
 
-// Patch Leaflet permettant de faire défiler la map (et donc les couches) sur un écran tactile
-var container = $(".leaflet-control-layers")[0];
-if (!L.Browser.touch) {
-  L.DomEvent
-  .disableClickPropagation(container)
-  .disableScrollPropagation(container);
-} else {
-  L.DomEvent.disableClickPropagation(container);
-}
+
+
+
+
+
+
+
+var parkIcon = L.icon({
+  iconUrl: '/static/assets/img/parking.png',
+  iconSize: [20,20]
+});
+
+var veloIcon = L.icon({
+  iconUrl: '/static/assets/img/velo.png',
+  iconSize: [25,25]
+});
+/*
+$.ajax({
+  url: "data/parkings.geojson",
+  dataType: "json",
+  success: function(parking){
+    var parkLayer = L.geoJson(parking, { pointToLayer: function(feature,latlng){
+      var marker = L.marker(latlng,{icon: parkIcon});
+      marker.bindPopup(feature.properties.nom + " " + feature.properties.adresse);
+      return marker;
+    }})
+    .addTo(map);
+    //var clusters = L.markerClusterGroup();
+    //clusters.addLayer(parkLayer);
+    //map.addLayer(clusters);
+  }
+});
+
+$.ajax({
+  url: "data/Velomagg.geojson",
+  dataType: "json",
+  success: function(velo){
+
+    var veloLayer = L.geoJson(velo, { pointToLayer: function(feature,latlng){
+      var marker = L.marker(latlng,{icon: veloIcon});
+      marker.bindPopup(feature.properties.name);
+      return marker;
+    }})
+    .addTo(map);
+    console.log(velomaggLayer);
+  }
+});
+
+*/
