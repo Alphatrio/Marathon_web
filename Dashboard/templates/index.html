@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,23 +17,23 @@
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">
     <link rel="stylesheet" href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css">
-    <link rel="stylesheet" href="/static/assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">
-    <link rel="stylesheet" href="/static/assets/css/app.css">
+    <link rel="stylesheet" href="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">
+    <link rel="stylesheet" href="assets/css/app.css">
 
-    <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/favicon-76.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon-120.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/static/assets/img/favicon-152.png">
-    <link rel="icon" sizes="196x196" href="/static/assets/img/favicon-196.png">
-    <link rel="icon" type="image/x-icon" href="/static/assets/img/favicon.ico">
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
+    <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
 
-    <link rel="stylesheet" href="/static/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
 		<meta charset="UTF-8" />
 		<title>Dashboard</title>
-		<script type="text/javascript" src="/static/leaflet/leaflet.js"></script>
+		<script type="text/javascript" src="leaflet/leaflet.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="/static/Leaflet.markercluster-1.4.1/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="/static/Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css" />
-    <script src="/static/Leaflet.markercluster-1.4.1/dist/leaflet.markercluster.js"> </script>
+    <link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="Leaflet.markercluster-1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="Leaflet.markercluster-1.4.1/dist/leaflet.markercluster.js"> </script>
   </head>
 
   <body>
@@ -47,27 +47,16 @@
           <a class="navbar-brand" href="#">MontpelYeah</a>
         </div>
         <div class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right" role="search">
-            <div class="form-group has-feedback">
-                <input id="searchbox" type="text" placeholder="Search" class="form-control">
-                <span id="searchicon" class="fa fa-search form-control-feedback"></span>
-            </div>
-          </form>
+
           <ul class="nav navbar-nav">
             <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;À propos</a></li>
-            <li class="dropdown">
-              <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe white"></i>&nbsp;&nbsp;Outils <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Zoom To Full Extent</a></li>
-                <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="legend-btn"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;Show Legend</a></li>
+            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Vue initiale</a></li>
 
-              </ul>
-            </li>
             <li class="dropdown">
                 <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;Télécharger <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="/static/data/parkings.geojson" download="/static/parkings.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Parkings</a></li>
-                  <li><a href="/static/data/velomagg.geojson" download="/static/velomagg.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Stations Velomagg'</a></li>
+                  <li><a href="data/parkings.geojson" download="parkings.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Parkings</a></li>
+                  <li><a href="data/velomagg.geojson" download="velomagg.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Stations Velomagg'</a></li>
                 </ul>
             </li>
             <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;Afficher/Masquer liste</a></li>
@@ -87,7 +76,7 @@
             <div class="panel-body">
               <div class="row">
                 <div class="col-xs-8 col-md-8">
-                  <input type="text" class="form-control search" placeholder="Filter" />
+                  <input type="text" class="form-control search" placeholder="Rechercher" />
                 </div>
                 <div class="col-xs-4 col-md-4">
                   <button type="button" class="btn btn-primary pull-right sort" data-sort="feature-name" id="sort-btn"><i class="fa fa-sort"></i>&nbsp;&nbsp;Trier</button>
@@ -122,69 +111,35 @@
         <div class="modal-content">
           <div class="modal-header">
             <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Bienvenue sur votre indicateur Tam en temps réel</h4>
+            <h4 class="modal-title">Bienvenue sur votre indicateur MontpelYeah en temps réel</h4>
           </div>
           <div class="modal-body">
             <ul class="nav nav-tabs nav-justified" id="aboutTabs">
               <li class="active"><a href="#about" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;À propos du projet</a></li>
-              <li><a href="#disclaimer" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Disclaimer</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe"></i>&nbsp;Metadata <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#boroughs-tab" data-toggle="tab">Boroughs</a></li>
-                  <li><a href="#subway-lines-tab" data-toggle="tab">Subway Lines</a></li>
-                  <li><a href="#theaters-tab" data-toggle="tab">Theaters</a></li>
-                  <li><a href="#museums-tab" data-toggle="tab">Museums</a></li>
-                </ul>
-              </li>
+              <li><a href="#disclaimer" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Clause de non-responsabilité</a></li>
+
             </ul>
             <div class="tab-content" id="aboutTabsContent">
               <div class="tab-pane fade active in" id="about">
-                <p>A simple, responsive template for building web mapping applications with <a href="http://getbootstrap.com/">Bootstrap 3</a>, <a href="http://leafletjs.com/" target="_blank">Leaflet</a>, and <a href="http://twitter.github.io/typeahead.js/" target="_blank">typeahead.js</a>. Open source, MIT licensed, and available on <a href="https://github.com/bmcbride/bootleaf" target="_blank">GitHub</a>.</p>
+                <p>MontpelYeah - Marathon du web - Équipe 3 ; créé avec <a href="http://getbootstrap.com/">Bootstrap 3</a>, <a href="http://leafletjs.com/" target="_blank">Leaflet</a>, et <a href="http://twitter.github.io/typeahead.js/" target="_blank">typeahead.js</a>. La page a été librement inspirée d'un projet open source disponible ici : <a href="https://github.com/bmcbride/bootleaf" target="_blank">GitHub</a>.</p>
 
               </div>
               <div id="disclaimer" class="tab-pane fade text-danger">
-                <p>The data provided on this site is for informational and planning purposes only.</p>
-                <p>Absolutely no accuracy or completeness guarantee is implied or intended. All information on this map is subject to such variations and corrections as might result from a complete title search and/or accurate field survey.</p>
+                <p>Les données, actualisées toutes les 5 minutes, proviennent de la Tam. Nous ne sommes pas responsables de leur pertinence et leurs variations.</p>
+
               </div>
 
-              <div class="tab-pane fade" id="boroughs-tab">
-                <p>Borough data courtesy of <a href="http://www.nyc.gov/html/dcp/pdf/bytes/nybbwi_metadata.pdf" target="_blank">New York City Department of City Planning</a></p>
-              </div>
-              <div class="tab-pane fade" id="subway-lines-tab">
-                <p><a href="http://spatialityblog.com/2010/07/08/mta-gis-data-update/#datalinks" target="_blank">MTA Subway data</a> courtesy of the <a href="http://www.urbanresearch.org/about/cur-components/cuny-mapping-service" target="_blank">CUNY Mapping Service at the Center for Urban Research</a></p>
-              </div>
-              <div class="tab-pane fade" id="theaters-tab">
-                <p>Theater data courtesy of <a href="https://data.cityofnewyork.us/Recreation/Theaters/kdu2-865w" target="_blank">NYC Department of Information & Telecommunications (DoITT)</a></p>
-              </div>
-              <div class="tab-pane fade" id="museums-tab">
-                <p>Museum data courtesy of <a href="https://data.cityofnewyork.us/Recreation/Museums-and-Galleries/sat5-adpb" target="_blank">NYC Department of Information & Telecommunications (DoITT)</a></p>
-              </div>
+
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <div class="modal fade" id="legendModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Map Legend</h4>
-          </div>
-          <div class="modal-body">
-            <p>Map Legend goes here...</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+
 
 
 
@@ -197,7 +152,7 @@
           </div>
           <div class="modal-body" id="feature-info"></div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -227,7 +182,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
-    <script src="/static/assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
-    <script src="/static/assets/js/app.js"></script>
+    <script src="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
+    <script src="assets/js/app.js"></script>
   </body>
 </html>
